@@ -4,4 +4,4 @@ depend {
     "request": "@../..#s1"
 }
 
-CALL_request up "https://github.com"
+CALL_request up "http://github.com"
