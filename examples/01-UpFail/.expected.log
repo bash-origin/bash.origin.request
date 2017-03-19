@@ -1,2 +1,2 @@
-ERROR: Not Up! Got status 301 for url http://github.com.
+ERROR: Got status 301 for url http://github.com while expecting 200.
 [exit code: 1]
