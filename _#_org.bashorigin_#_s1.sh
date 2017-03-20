@@ -1,5 +1,11 @@
 #!/usr/bin/env bash.origin.script
 
+if [ ! -e "$__DIRNAME__/node_modules" ]; then
+    pushd "$__DIRNAME__" > /dev/null
+        BO_run_npm install
+    popd > /dev/null
+fi
+
 function EXPORTS_expect {
     local status=$(curl --write-out %{http_code} --silent --output /dev/null "${2}")
     if [ "$status" != "${1}" ]; then
@@ -9,12 +15,6 @@ function EXPORTS_expect {
 }
 
 function EXPORTS_wait {
-
-    if [ ! -e "$__DIRNAME__/node_modules" ]; then
-        pushd "$__DIRNAME__" > /dev/null
-            BO_run_npm install
-        popd > /dev/null
-    fi
 
     BO_run_node --eval '
 
