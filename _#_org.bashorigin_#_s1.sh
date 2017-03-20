@@ -18,13 +18,13 @@ function EXPORTS_wait {
 
     BO_run_node --eval '
 
-        const REQUEST = require("request");
+        const REQUEST = require("$__DIRNAME__/node_modules/request");
 
 
         var rules = process.argv.slice(1);
 
         var options = {};
-        if (rules.length === 3) {
+        if (rules.length >= 3) {
             options.routes = {
                 alive: {
                     uri: rules[2],
@@ -32,6 +32,9 @@ function EXPORTS_wait {
                     timeout: rules[0] * 1000
                 }
             };
+            if (rules[3]) {
+                options.routes.alive.expect = rules[3];
+            }
         }
 
         if (typeof options.routes.alive === "string") {
