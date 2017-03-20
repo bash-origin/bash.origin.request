@@ -1,6 +1,6 @@
 {
     "name": "bash.origin.request",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "dependencies": {
         "bash.origin.test": "^0.1.24",
         "request": "^2.81.0"
