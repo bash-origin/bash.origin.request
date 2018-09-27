@@ -7,6 +7,11 @@ if [ ! -e "$__DIRNAME__/node_modules" ]; then
 fi
 
 function EXPORTS_expect {
+    echo "DEPRECATED: Use 'expect_status' instead of 'expect'"
+    exit 1
+}
+
+function EXPORTS_expect_status {
     local status=$(curl --write-out %{http_code} --silent --output /dev/null "${2}")
     if [ "$status" != "${1}" ]; then
         echo "ERROR: Got status $status for url ${2} while expecting ${1}."
@@ -62,6 +67,13 @@ function EXPORTS_wait {
             if (process.env.VERBOSE) console.log("Checking url " + url + " against " + JSON.stringify(options.routes.alive.expect || "") + ".");
         }
 
+        function finish () {
+            if (timeoutInterval) {
+                clearInterval(timeoutInterval);
+            }
+            process.exit(0);
+        }
+
         function checkAgain () {
             setTimeout(function () {
                 doCheck();
@@ -69,20 +81,30 @@ function EXPORTS_wait {
         }
 
         function doCheck () {
+
+            checkAgain();
+
+            if (process.env.VERBOSE) console.log("Making request to url " + url);
+
             return REQUEST({
                 method: "GET",
-                url: url
+                url: url,
+                timeout: 1 * 1000
             }, function (err, response, body) {
                 if (err) {
-                    return checkAgain();
+//                    return checkAgain();
+                    return null;
                 }
+
+                if (process.env.VERBOSE) console.log("got response");
 
                 if (options.routes.alive.status) {
   
                     if (process.env.VERBOSE) console.log("options.routes.alive.status", options.routes.alive.status);
 
                     if (response.statusCode != options.routes.alive.status) {
-                        return checkAgain();
+//                        return checkAgain();
+                        return null;
                     }
                 }
 
@@ -93,7 +115,8 @@ function EXPORTS_wait {
                     if (typeof options.routes.alive.expect === "string") {
 
                         if (response.body !== options.routes.alive.expect) {
-                            return checkAgain();
+//                            return checkAgain();
+                            return null;
                         }
 
                     } else {
@@ -102,24 +125,30 @@ function EXPORTS_wait {
 
                             response.body = JSON.parse(response.body);
 
+                            if (process.env.VERBOSE) console.log("response.body", response.body);
+
                         } catch (err) {
                             if (process.env.VERBOSE) console.error("Error parsing response JSON to match it to expected value.", err.stack);
-                            return checkAgain();
+//                            return checkAgain();
+                            return null;
                         }
 
                         for (var name in options.routes.alive.expect) {
                             if (response[name] !== options.routes.alive.expect[name]) {
-                                return checkAgain();
+
+                                if (process.env.VERBOSE) console.log("name", name);
+                                if (process.env.VERBOSE) console.log("response[name]", response[name]);
+                                if (process.env.VERBOSE) console.log("options.routes.alive.expect[name]", options.routes.alive.expect[name]);
+
+//                                return checkAgain();
+                                return null;
                             }
                         }
                     }
                 }
 
                 // All good!
-                if (timeoutInterval) {
-                    clearInterval(timeoutInterval);
-                }
-                process.exit(0);
+                finish();
             });
         }
 
