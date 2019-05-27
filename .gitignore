@@ -1,4 +1,5 @@
 /node_modules/
+/package-local.json
 /examples/*/.actual.*
 /.installed.*
 *~.compiled.*
