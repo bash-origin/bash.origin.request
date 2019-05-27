@@ -4,6 +4,6 @@ depend {
     "request": "@../..#s1"
 }
 
-CALL_request expect 200 "https://github.com"
+CALL_request expect_status 200 "https://github.com"
 
 echo "OK"
