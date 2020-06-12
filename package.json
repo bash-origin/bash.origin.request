@@ -1,9 +1,9 @@
 {
   "name": "bash.origin.request",
-  "version": "0.2.0-pre.0",
+  "version": "0.3.0-pre.0",
   "dependencies": {
     "request": "^2.81.0",
-    "bash.origin.lib": "^0.4.0-pre.20"
+    "bash.origin.lib": "^0.5.0-pre.0"
   },
   "scripts": {
     "test": "bash.origin.test examples"
